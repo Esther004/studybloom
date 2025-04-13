@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Task List</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f1fa;
+        color: #333;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+        color: #6fb3b8;
+      }
+
+      h1 {
+        font-size: 2em;
+        margin-top: 20px;
+        animation: fadeInSlide 1.2s ease-out;
+      }
+
+      .welcome-banner {
+        background: linear-gradient(to right, #f9d5e5, #6fb3b8);
+        padding: 20px;
+        text-align: center;
+        border-radius: 12px;
+        margin: 20px auto;
+        max-width: 600px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        animation: fadeInSlide 1.5s ease-out;
+      }
+
+      .welcome-banner h2,
+      .welcome-banner p {
+        color: #000;
+        margin: 0;
+        font-size: 28px;
+      }
+
+      .calendar-container {
+        max-width: 600px;
+        margin: 20px auto;
+        text-align: center;
+        animation: fadeInSlide 1.8s ease-out;
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .calendar-header button {
+        padding: 6px 12px;
+        background-color: #6fb3b8;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .calendar-header h3 {
+        margin: 10px 0;
+      }
+
+      .calendar {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .calendar th,
+      .calendar td {
+        border: 1px solid #e0dfe5;
+        padding: 10px;
+        height: 60px;
+        width: 14.2%;
+        text-align: center;
+        vertical-align: top;
+      }
+
+      .calendar th {
+        background-color: #f9d5e5;
+      }
+
+      .today {
+        background-color: #6fb3b8;
+        color: white;
+        border-radius: 50%;
+        padding: 5px;
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 20px;
+      }
+
+      .task-list {
+        list-style-type: none;
+        padding: 0;
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .task-item {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 20px;
+      }
+
+      .task-title {
+        font-weight: bold;
+        color: #6fb3b8;
+      }
+
+      .task-due-date {
+        font-size: 0.85em;
+        color: #888;
+      }
+
+      .reminder {
+        background-color: #fffacc;
+        padding: 5px;
+        margin-top: 5px;
+        display: inline-block;
+      }
+
+      .wellness-tips {
+        margin-top: 20px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .tip-item {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+      }
+
+      .tip-title {
+        font-weight: bold;
+        color: #6fb3b8;
+      }
+
+      a {
+        text-decoration: none;
+        color: #fff;
+        background: linear-gradient(to right, #f9d5e5, #6fb3b8);
+        padding: 8px 16px;
+        border-radius: 6px;
+        display: inline-block;
+        transition: transform 0.3s ease;
+      }
+
+      a:hover {
+        background-color: #589a9e;
+        transform: scale(1.05);
+      }
+
+      @keyframes fadeInSlide {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Floating leaves background */
+      .floating-leaf {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: url('https://img.icons8.com/emoji/48/leaf-fluttering-in-wind.png')
+          no-repeat center/contain;
+        animation: floatLeaf 15s linear infinite;
+        pointer-events: none;
+        opacity: 0.6;
+      }
+
+      @keyframes floatLeaf {
+        0% {
+          transform: translateY(-40px) rotate(0deg);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .music-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #6fb3b8;
+        color: white;
+        padding: 10px 14px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>StudyBloom🌸</h1>
+
+    <div class="welcome-banner">
+      <h2>Welcome Esther Oluwakemi Olusanya!</h2>
+      <p>Here's to a peaceful and productive day 💖</p>
+    </div>
+
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button onclick="changeMonth(-1)">Previous</button>
+        <h3 id="monthYear"></h3>
+        <button onclick="changeMonth(1)">Next</button>
+      </div>
+      <table class="calendar">
+        <thead>
+          <tr>
+            <th>Sun</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+          </tr>
+        </thead>
+        <tbody id="calendarBody"></tbody>
+      </table>
+    </div>
+
+    <h2>📌 Notifications</h2>
+    <ul class="task-list">
+      <li class="task-item">
+        <div class="task-title">Assignment 1</div>
+        <div class="task-due-date">Due: 2025-04-15</div>
+        <div class="reminder">Reminder: 2 days before</div>
+      </li>
+      <li class="task-item">
+        <div class="task-title">Study for Exam</div>
+        <div class="task-due-date">Due: 2025-04-20</div>
+      </li>
+    </ul>
+
+    <h2>🧘 Wellness Tips to Nurture You</h2>
+    <div class="wellness-tips">
+      <div class="tip-item">
+        <div class="tip-title">Stress Management 🌿</div>
+        <p>Take short breaks throughout the day to relax.</p>
+      </div>
+      <div class="tip-item">
+        <div class="tip-title">Mindfulness ✨</div>
+        <p>Practice deep breathing exercises.</p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px">
+      <a href="{% url 'create_task' %}">🌼 Create Task</a>
+    </div>
+
+    <!-- 🌧️ Soothing Nature Sound -->
+    <div class="music-toggle" onclick="toggleMusic()">🎵 Toggle Rain Sound</div>
+    <audio id="rainSound" loop preload="auto">
+        <source src="https://www.soundjay.com/nature/rain-01.mp3" type="audio/mpeg" />
+      </audio>      
+      <audio id="rainSound" loop preload="auto">          
+
+    <!-- 🍃 Floating Leaves -->
+    <script>
+      for (let i = 0; i < 10; i++) {
+        const leaf = document.createElement("div");
+        leaf.className = "floating-leaf";
+        leaf.style.left = Math.random() * 100 + "vw";
+        leaf.style.animationDelay = Math.random() * 10 + "s";
+        document.body.appendChild(leaf);
+      }
+
+      const calendarBody = document.getElementById("calendarBody");
+      const monthYear = document.getElementById("monthYear");
+      let currentDate = new Date();
+
+      function renderCalendar(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        monthYear.textContent = date.toLocaleString("default", {
+          month: "long",
+        }) + " " + year;
+
+        calendarBody.innerHTML = "";
+        let row = document.createElement("tr");
+        for (let i = 0; i < firstDay; i++) {
+          row.appendChild(document.createElement("td"));
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          if (row.children.length === 7) {
+            calendarBody.appendChild(row);
+            row = document.createElement("tr");
+          }
+
+          const cell = document.createElement("td");
+          const today = new Date();
+          if (
+            day === today.getDate() &&
+            month === today.getMonth() &&
+            year === today.getFullYear()
+          ) {
+            cell.innerHTML = `<span class="today">${day}</span>`;
+          } else {
+            cell.textContent = day;
+          }
+          row.appendChild(cell);
+        }
+
+        if (row.children.length > 0) {
+          while (row.children.length < 7) {
+            row.appendChild(document.createElement("td"));
+          }
+          calendarBody.appendChild(row);
+        }
+      }
+
+      function changeMonth(offset) {
+        currentDate.setMonth(currentDate.getMonth() + offset);
+        renderCalendar(currentDate);
+      }
+
+      function toggleMusic() {
+        const rain = document.getElementById("rainSound");
+        rain.load(); // Ensures the audio is ready
+        if (rain.paused) {
+          rain.play().catch((err) => {
+            console.log("Audio play error:", err);
+          });
+        } else {
+          rain.pause();
+        }
+      }
+
+      const events = [
+    { date: '2025-04-15', title: 'Assignment 1 Due' },
+    { date: '2025-04-20', title: 'Study for Exam' }
+  ];
+
+  function renderCalendar(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    monthYear.textContent = date.toLocaleString("default", {
+      month: "long",
+    }) + " " + year;
+
+    calendarBody.innerHTML = "";
+    let row = document.createElement("tr");
+    for (let i = 0; i < firstDay; i++) {
+      row.appendChild(document.createElement("td"));
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      if (row.children.length === 7) {
+        calendarBody.appendChild(row);
+        row = document.createElement("tr");
+      }
+
+      const cell = document.createElement("td");
+      const today = new Date();
+      const cellDate = new Date(year, month, day);
+      const cellDateString = cellDate.toISOString().split('T')[0];
+
+      if (
+        day === today.getDate() &&
+        month === today.getMonth() &&
+        year === today.getFullYear()
+      ) {
+        cell.innerHTML = `<span class="today">${day}</span>`;
+      } else {
+        cell.textContent = day;
+      }
+
+      // Check if there's an event for this date
+      events.forEach(event => {
+        if (event.date === cellDateString) {
+          const eventDiv = document.createElement("div");
+          eventDiv.textContent = event.title;
+          eventDiv.style.color = '#f76c6c';
+          eventDiv.style.fontSize = '0.8em';
+          eventDiv.style.marginTop = '5px';
+          cell.appendChild(eventDiv);
+        }
+      });
+
+      row.appendChild(cell);
+    }
+
+    if (row.children.length > 0) {
+      while (row.children.length < 7) {
+        row.appendChild(document.createElement("td"));
+      }
+      calendarBody.appendChild(row);
+    }
+  }
+
+      renderCalendar(currentDate);
+    </script>
+  </body>
+</html>
